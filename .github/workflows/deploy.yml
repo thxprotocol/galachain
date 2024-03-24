@@ -44,6 +44,7 @@ jobs:
     name: Build and Push docker image
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
+    depends-on: buildAndTest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
