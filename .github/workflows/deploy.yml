@@ -44,7 +44,6 @@ jobs:
     name: Build and Push docker image
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
-    needs: bumpVersion
     steps:
       - name: Checkout
         uses: actions/checkout@v4
