@@ -87,7 +87,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - name: Install cli
-        run: npm i galachain -g
+        run: npm i -g @gala-chain/cli
 
       - name: Connect
         run: galachain connect ./keys/gc-dev-key
