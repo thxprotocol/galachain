@@ -4,8 +4,8 @@ on:
   push:
 
 jobs:
-  buildAndTest:
-    name: Deploy Pipeline
+  install:
+    name: Install dependencies
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -44,7 +44,7 @@ jobs:
     name: Build and Push docker image
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
-    depends-on: buildAndTest
+    needs: install
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -69,3 +69,29 @@ jobs:
           context: .
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/thxnetwork:latest
+
+  dpeloy:
+    name: Deploy image to galachain
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    needs: buildAndPushImage
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install cli
+        run: npm i galachain -g
+
+      - name: Connect
+        run: galachain connect ./keys/gc-dev-key
+
+      - name: Deploy
+        run: galachain test-deploy ${{ secrets.DOCKERHUB_USERNAME }}/thxnetwork:latest ./keys/gc-dev-key
+
+      - name: Info
+        run: galachain info ./keys/gc-dev-key
