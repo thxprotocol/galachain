@@ -43,6 +43,7 @@ jobs:
   buildAndPushImage:
     name: Build and Push docker image
     runs-on: ubuntu-latest
+    environment: main
     if: github.ref == 'refs/heads/main'
     needs: install
     steps:
@@ -73,6 +74,7 @@ jobs:
   dpeloy:
     name: Deploy image to galachain
     runs-on: ubuntu-latest
+    environment: main
     if: github.ref == 'refs/heads/main'
     needs: buildAndPushImage
     steps:
